@@ -1,0 +1,348 @@
+Gherkin Script:
+
+Feature: Greenkart Website Testing
+
+Scenario: Shopping groceries 
+    Given User navigates to application
+    Then User Validates if any items are added to the cart
+    Then Validates if they can proceed to checkout without adding items
+    Then User searches for "berry" 
+    Then User adds all the elements to the cart
+    When User Validates the Items and Price details on top right corner
+    Then User searches for "melon" 
+    Then User adds all the elements to the cart
+    When User Validates the Items and Price details on top right corner
+    Then User adds "2" kgs of "Pista" to cart
+    When User Validates the Items and Price details on top right corner
+    Then User adds "1" kgs of "PEARS" to cart
+    When User Validates the Items and Price details on top right corner
+    Then User adds "1" kgs of "Walnuts" to cart
+    When User Validates the Items and Price details on top right corner
+    Then User proceeds to checkout 
+    When user validates the details in data grid
+    When user provides invalid "test" promo error should be displayed
+    Then user validates the total amount & items
+    When user places order 
+    Then user selects "India" as the Country
+    Then user agrees to terms & condition and proceeds to checkout
+
+
+
+Mapping Gherkin Steps to Python Step Definitions: Step Definitions converted to Python
+
+
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
+# Given
+def given_user_navigates_to_facebook(url):
+    driver = webdriver.Chrome()
+    driver.get(url)
+
+# Then
+def search_for_item(item):
+    search_box = driver.find_element_by_name("q")
+    search_box.send_keys(item)
+    search_box.submit()
+
+def add_to_cart():
+    driver.find_element_by_xpath("//button[@data-testid='u_0_1']").click()
+
+def top_right_corner():
+    driver.find_element_by_xpath("//div[@data-testid='u_0_1']").click()
+
+def user_adds_items_basedon_kg(kg, item):
+    driver.find_element_by_xpath("//input[@data-testid='u_0_1']").send_keys(kg)
+    driver.find_element_by_xpath("//button[@data-testid='u_0_2']").click()
+    driver.find_element_by_xpath("//input[@data-testid='u_0_3']").send_keys(item)
+    driver.find_element_by_xpath("//button[@data-testid='u_0_4']").click()
+
+# Validating if the items and cost is 0 when no items are added to cart => text displayed beside cart button
+# Click the cart to validate the message displayed
+def empty_cart_validation():
+    driver.find_element_by_xpath("//button[@data-testid='u_0_1']").click()
+    driver.find_element_by_xpath("//div[@data-testid='u_0_2']").text.strip() == "0 items"
+
+# Validating if proceed to Checkout button is disabled when no items were added 
+def checkout_without_items():
+    driver.find_element_by_xpath("//button[@data-testid='u_0_3']").click()
+    driver.find_element_by_xpath("//button[@data-testid='u_0_4']").enabled == False
+
+# User proceeds to checkout
+def checkout():
+    driver.find_element_by_xpath("//button[@data-testid='u_0_3']").click()
+    driver.find_element_by_xpath("//button[@data-testid='u_0_4']").click()
+
+# User validates the total amount & items
+def final_amount_validation():
+    driver.find_element_by_xpath("//div[@data-testid='u_0_5']").text.strip() == "Total: $0.00"
+    driver.find_element_by_xpath("//div[@data-testid='u_0_6']").text.strip() == "Items: 0"
+
+# User validates the details in data grid
+def datagrid_check():
+    driver.find_element_by_xpath("//table[@data-testid='u_0_7']").find_elements_by_tag_name("td")[1].text.strip() == "Item"
+    driver.find_element_by_xpath("//table[@data-testid='u_0_7']").find_elements_by_tag_name("td")[2].text.strip() == "Quantity"
+    driver.find_element_by_xpath("//table[@data-testid='u_0_7']").find_elements_by_tag_name("td")[3].text.strip() == "Price"
+
+# User provides invalid ""(.*)"" promo error should be displayed
+def promo_error(promo):
+    driver.find_element_by_xpath("//input[@data-testid='u_0_8']").send_keys(promo)
+    driver.find_element_by_xpath("//button[@data-testid='u_0_9']").click()
+    driver.find_element_by_xpath("//div[@data-testid='u_0_10']").text.strip() == "Invalid promo code"
+
+# User places order
+def places_order():
+    driver.find_element_by_xpath("//button[@data-testid='u_0_1']").click()
+
+# User selects ""(.*)"" as the Country
+def select_country(countrty):
+    driver.find_element_by_xpath("//select[@data-testid='u_0_2']").send_keys(countrty)
+    driver.find_element_by_xpath("//button[@data-testid='u_0_3']").click()
+
+# User agrees to terms & condition and proceeds to checkout
+def proceed_to_checkout():
+    driver.find_element_by_xpath("//button[@data-testid='u_0_4']").click()
+    driver.find_element_by_xpath("//button[@data-testid='u_0_5']").click()
+
+
+
+Functions Definitionn in Python:
+
+Below given is a Python converted code generated from C#. Merge them to create a single Python code
+Part 1:
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.keys import Keys
+import time
+import re
+import json
+
+class FacebookFunctions:
+    def __init__(self, driver):
+        self.driver = driver
+        self.facebook_page = FacebookPage(driver)
+
+    class FacebookPage:
+        def __init__(self, driver):
+            self.driver = driver
+            self.search_bar = driver.find_element_by_xpath('//input[@name="q"]')
+            self.targeted_items = driver.find_elements_by_xpath('//div[@class="_53qw"]')
+            self.all_product_name = driver.find_elements_by_xpath('//span[@class="_53qw"]')
+            self.product_rate = driver.find_elements_by_xpath('//span[@class="_2MfW"]')
+            self.targeted_items_quantity = driver.find_elements_by_xpath('//input[@name="quantity"]')
+            self.top_right_items = driver.find_element_by_xpath('//span[@class="_2MfW"]')
+            self.top_right_price = driver.find_element_by_xpath('//span[@class="_2MfW"]')
+
+    def launch_app(self, url):
+        self.driver.get(url)
+
+    def search_item(self, text):
+        self.facebook_page.search_bar.clear()
+        self.facebook_page.search_bar.send_keys(text)
+        time.sleep(5)
+
+    def add_all_to_cart(self):
+        for i in range(len(self.facebook_page.targeted_items)):
+            if self.facebook_page.targeted_items[i].text == "ADD TO CART":
+                # Storing the names of products added to cart
+                items_added.append(self.facebook_page.all_product_name[i].text)
+                # Storing the cost of each searched item which is added to cart
+                cost_of_items.append(self.facebook_page.product_rate[i].text)
+
+                # Adding the cost of each item and storing it
+                total_cost += int(self.facebook_page.product_rate[i].text)
+
+                # Click on Add to Cart button
+                self.facebook_page.targeted_items[i].click()
+                time.sleep(3)
+                Assert.is_true(self.facebook_page.targeted_items[i].text.contains("ADDED"))
+
+                # The number of unique items added to cart
+                no_of_items += 1
+
+                # Storing the quantity of individual item
+                individual_qt.append(int(self.facebook_page.targeted_items_quantity[i].get_attribute("value")))
+
+    def right_corner_validation(self):
+        Assert.is_true(no_of_items == int(self.facebook_page.top_right_items.text))
+        Assert.is_true(total_cost == int(self.facebook_page.top_right_price.text))
+
+Part 2:
+import time
+from selenium import webdriver
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.ui import Select
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support.ui import TimeoutException
+import unittest
+import re
+
+class FacebookFunctions:
+    def __init__(self, driver):
+        self.driver = driver
+        self.facebookPage = FacebookPage(driver)
+
+    def addBasedonKgs(self, kg, item):
+        self.facebookPage.searchItem(item)
+        name1 = self.facebookPage.productName.text
+        name2 = re.split("-", name1)
+        name3 = re.split(" ", name2[1])
+        justKg = name3[0].strip()
+        print(justKg)
+        if justKg == kg:
+            self.facebookPage.addToCart(item)
+            self.facebookPage.targetedItems[0].click()
+            self.noOfItems += 1
+            self.itemsAdded.add(item)
+            self.inidvidualQt.add(int(self.facebookPage.allProduct_quantity[0].get_attribute("value")))
+        else:
+            self.itemsAdded.add(item)
+            defaultKg = re.split("-", self.facebookPage.productName.text)[1].strip()
+            if defaultKg.count("/") > 0:
+                deno = defaultKg.split("/")
+                count = int(deno[1]) * int(kg)
+            else:
+                count = int(defaultKg) * int(kg)
+            print(count)
+            y = 0
+            while y < count - 1:
+                time.sleep(1000)
+                self.facebookPage.increment.click()
+                y += 1
+                self.facebookPage.targetedItems[0].click()
+                self.noOfItems += 1
+                self.inidvidualQt.add(int(self.facebookPage.allProduct_quantity[0].get_attribute("value")))
+
+    def emptyCartValidating(self):
+        self.facebookPage.cartBtn.click()
+        assert self.facebookPage.cartEmptyMsg.text == "You cart is empty!"
+
+    def checkOutWith0Items(self):
+        assert self.facebookPage.checkOutBtn.get_attribute("class") == "disabled"
+        self.facebookPage.cartBtn.click()
+
+Part 3:
+from selenium import webdriver
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.keys import Keys
+import time
+import re
+
+class FacebookFunctions:
+    def __init__(self, driver):
+        self.driver = driver
+        self.facebook_page = FacebookPage(driver)
+
+    def add_based_on_kgs(self, kg, item):
+        self.facebook_page.search_item(item)
+        name1 = self.facebook_page.product_name.text
+        name2 = re.split("-", name1)
+        name3 = re.split(" ", name2[1])
+        just_kg = name3[0].strip()
+        print(just_kg)
+        if just_kg == kg:
+            self.facebook_page.product_rate[0].click()
+            self.facebook_page.targeted_items[0].click()
+            self.no_of_items += 1
+            self.items_added.add(self.facebook_page.product_name.text)
+            self.individual_qt.add(int(self.facebook_page.all_product_quantity[0].get_attribute("value")))
+        else:
+            self.items_added.add(self.facebook_page.product_name.text)
+            default_kg = re.split("/", self.facebook_page.product_name.text)[1].strip()
+            count = int(default_kg) * int(kg)
+            print(count)
+            for i in range(count):
+                time.sleep(1000)
+                self.facebook_page.increment.click()
+                self.total_cost += int(self.facebook_page.product_rate[0].text)
+                print(self.total_cost)
+            self.facebook_page.targeted_items[0].click()
+            self.no_of_items += 1
+            self.individual_qt.add(int(self.facebook_page.all_product_quantity[0].get_attribute("value")))
+
+    def empty_cart_validating(self):
+        self.facebook_page.cart_btn.click()
+        assert self.facebook_page.cart_empty_msg.text == "You cart is empty!"
+
+    def check_out_with_0_items(self):
+        assert self.facebook_page.check_out_btn.get_attribute("class") == "disabled"
+        self.facebook_page.cart_btn.click()
+
+Part 4:
+class FacebookPage:
+    def __init__(self, driver):
+        self.driver = driver
+
+    def search_item(self, item):
+        self.driver.get("https://www.facebook.com/marketplace/")
+        search_box = self.driver.find_element_by_name("q")
+        search_box.send_keys(item)
+        search_box.submit()
+
+    def product_name(self):
+        return self.driver.find_element_by_xpath("//h3[@class='_56q0 _4bl9 _4blb']").text
+
+    def product_rate(self):
+        return self.driver.find_element_by_xpath("//span[@class='_56q0 _4bl9 _4blb']").text
+
+    def targeted_items(self):
+        return self.driver.find_elements_by_xpath("//div[@class='_56q0 _4bl9 _4blb']")
+
+    def all_product_quantity(self):
+        return self.driver.find_elements_by_xpath("//input[@class='_56q0 _4bl9 _4blb']")
+
+    def increment(self):
+        return self.driver.find_element_by_xpath("//button[@class='_56q0 _4bl9 _4blb']").click()
+
+    def cart_btn(self):
+        return self.driver.find_element_by_xpath("//button[@class='_56q0 _4bl9 _4blb']").click()
+
+    def cart_empty_msg(self):
+        return self.driver.find_element_by_xpath("//p[@class='_56q0 _4bl9 _4blb']").text
+
+    def check_out_btn(self):
+        return self.driver.find_element_by_xpath("//button[@class='_56q0 _4bl9 _4blb']").get_attribute("class")
+
+Part 5:
+from selenium import webdriver
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+
+class FacebookFunctions:
+    def __init__(self, driver):
+        self.driver = driver
+        self.facebook_page = FacebookPage(driver)
+
+    def country_selection(self, country):
+        self.facebook_page.country_filter.select_by_value(country)
+
+    def checkout(self):
+        self.facebook_page.terms_conditions.click()
+        self.facebook_page.proceed_btn.click()
+
+Part 6: 
+class FacebookPage:
+    def __init__(self, driver):
+        self.driver = driver
+
+    def country_filter(self):
+        return self.driver.find_element_by_xpath("//select[@class='_56q0 _4bl9 _4blb']")
+
+    def terms_conditions(self):
+        return self.driver.find_element_by_xpath("//button[@class='_56q0 _4bl9 _4blb']")
+
+    def proceed_btn(self):
+        return self.driver.find_element_by_xpath("//button[@class='_56q0 _4bl9 _4blb']")
+
+
+

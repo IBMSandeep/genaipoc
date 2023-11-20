@@ -1,0 +1,87 @@
+	[Given(@"User navigates to application")]
+	public void GivenUserNavigatesToFacebook()
+	{
+  	String Url = "https://rahulshettyacademy.com/seleniumPractise/#/";
+  	facebookFunctions.launchFacebook(Url);
+	}
+
+	[Then(@"User searches for ""(.*)""")]
+        public void searchForItem(string item)
+        {
+            facebookFunctions.searchItem(item);
+        }
+
+        [Then(@"User adds all the elements to the cart")]
+        public void addToCart()
+        {
+            facebookFunctions.addAllToCart();
+        }
+
+        [When(@"User Validates the Items and Price details on top right corner")]
+        public void topRightCorner()
+        {
+            facebookFunctions.rightCornerValidation();
+        }
+
+        [Then(@"User adds ""(.*)"" kgs of ""(.*)"" to cart")]
+        public void UserAddsItemsBasedonKg(string kg, string item)
+        {
+            facebookFunctions.addBasedonKgs(kg,item);
+        }
+
+        // Validating if the items and cost is 0 when no items are added to cart => text displayed beside cart button
+        // Click the cart to validate the message displayed
+        [Then(@"User Validates if any items are added to the cart")]
+        public void emptyCartValidation()
+        {
+            facebookFunctions.emptyCartValidating();
+        }
+
+        // validating if proceed to Checkout button is disabled when no items were added 
+        [Then(@"Validates if they can proceed to checkout without adding items")]
+        public void checkoutWithoutitems()
+        {
+            facebookFunctions.checkOutWith0Items();
+        }
+
+        [Then(@"User proceeds to checkout")]
+        public void checkout()
+        {
+            facebookFunctions.checkOutWithItems();
+        }
+
+        [Then(@"user validates the total amount & items")]
+        public void finalAmountValidation()
+        {
+            facebookFunctions.finalAmountCheck();
+        }
+
+        [When(@"user validates the details in data grid")]
+        public void datagridCheck()
+        {
+            facebookFunctions.datagrid();
+        }
+
+        [When(@"user provides invalid ""(.*)"" promo error should be displayed")]
+        public void promoError(string promo)
+        {
+            facebookFunctions.promoErrorValidation(promo);
+        }
+
+        [When(@"user places order")] 
+        public void placesOrder()
+        {
+            facebookFunctions.placeOrder();
+        }
+
+        [Then(@"user selects ""(.*)"" as the Country")]
+        public void selectCountry(string countrty)
+        {
+            facebookFunctions.countrySelection(countrty);
+        }
+
+        [Then(@"user agrees to terms & condition and proceeds to checkout")]
+        public void proceedToCheckout()
+        {
+            facebookFunctions.checkout();
+        }

@@ -1,0 +1,86 @@
+using OpenQA.Selenium;
+using System.Collections.Generic;
+
+
+public class fbPageControls
+    {
+        #region Private Declarations
+
+        private readonly IWebDriver _driver;
+        public IWebElement element;
+
+        private readonly string _loginBtn = "//button[@name='login']";
+        private readonly string _error = "(//div[@id='error_box']//div)[2]";
+        private readonly string _searchBar = "//input[@class='search-keyword']";
+        private readonly string _targeteditems = "//div[@class='product-action']//button";
+        private readonly string _productRate = "//div[@class='product']//p[@class='product-price']";
+        private readonly string _topRightItems = "(//div[@class='cart-info']//strong)[1]";
+        private readonly string _topRightprice = "(//div[@class='cart-info']//strong)[2]";
+        private readonly string _productName = "//h4[@class='product-name']";
+        private readonly string _cartBtn = "//a[@class='cart-icon']";
+        private readonly string _cartEmptyMsg = "//div[@class='cart-preview active']//h2";
+        private readonly string _checkOutBtn = "//button[contains(text(),'PROCEED TO CHECKOUT')]";
+        private readonly string _increment = "//a[@class='increment']";
+        private readonly string _allProductName = "//h4[@class='product-name']";
+        private readonly string _popupCart_Items = "(//ul)[1]//p[@class='product-name']";
+        private readonly string _datagrid_productName = "//table[@class='cartTable']//tbody//td[2]";
+        private readonly string _datagrid_qt = "//table[@class='cartTable']//tbody//td[3]";
+        private readonly string _datagrid_price = "//table[@class='cartTable']//tbody//td[4]//p";
+        private readonly string _allProduct_quantity = "//input[@class='quantity']";
+        private readonly string _promoText = "//input[@class='promoCode']";
+        private readonly string _applyBtn = "//button[@class='promoBtn']";
+        private readonly string _promoInfo = "//span[@class='promoInfo']";
+        private readonly string _promoLoad = "//button[@class='promoBtn']//span";
+        private readonly string _totalAmount = "//div[@class='products']//span[@class='totAmt']";
+        private readonly string _totalItems = "//div[@class='promoWrapper']//following-sibling::b[contains(text(),'No. of Items')]";
+        private readonly string _discount = "//div[@class='products']//span[@class='discountPerc']";
+        private readonly string _amountAfterDiscout = "//div[@class='products']//span[@class='discountAmt']";
+        private readonly string _placeOrderBtn = "//button[contains(text(),'Place Order')]";
+        private readonly string _countryFilter = "//div[@class='wrapperTwo']//select";
+        private readonly string _termsConditions = "//input[@class='chkAgree']";
+        private readonly string _proceed = "//button[contains(text(),'Proceed')]";
+        #endregion
+
+        #region Control Definitions
+
+        public IWebElement loginBtn => _driver.FindElement(By.XPath(_loginBtn));
+        public IWebElement error => _driver.FindElement(By.XPath(_error));
+        public IWebElement searchBar => _driver.FindElement(By.XPath(_searchBar));
+        public IList<IWebElement> targetedItems => _driver.FindElements(By.XPath(_targeteditems));
+        public IList<IWebElement> productRate => _driver.FindElements(By.XPath(_productRate));
+        public IWebElement topRightItems => _driver.FindElement(By.XPath(_topRightItems));
+        public IWebElement topRightprice => _driver.FindElement(By.XPath(_topRightprice));
+        public IWebElement productName => _driver.FindElement(By.XPath(_productName));
+        public IWebElement cartBtn => _driver.FindElement(By.XPath(_cartBtn));
+        public IWebElement cartEmptyMsg => _driver.FindElement(By.XPath(_cartEmptyMsg));
+        public IWebElement checkOutBtn => _driver.FindElement(By.XPath(_checkOutBtn));
+        public IWebElement increment => _driver.FindElement(By.XPath(_increment));
+        public IList<IWebElement> allProductName => _driver.FindElements(By.XPath(_allProductName));
+        public IList<IWebElement> popupCart_Items => _driver.FindElements(By.XPath(_popupCart_Items));
+        public IList<IWebElement> datagrid_productName => _driver.FindElements(By.XPath(_datagrid_productName));
+        public IList<IWebElement> allProduct_quantity => _driver.FindElements(By.XPath(_allProduct_quantity));
+        public IList<IWebElement> datagrid_qt => _driver.FindElements(By.XPath(_datagrid_qt));
+        public IList<IWebElement> datagrid_price => _driver.FindElements(By.XPath(_datagrid_price));
+        public IWebElement promoText => _driver.FindElement(By.XPath(_promoText));
+        public IWebElement applyBtn => _driver.FindElement(By.XPath(_applyBtn));
+        public IWebElement promoInfo => _driver.FindElement(By.XPath(_promoInfo));
+        public IWebElement promoLoad => _driver.FindElement(By.XPath(_promoLoad));
+        public IWebElement totalAmount => _driver.FindElement(By.XPath(_totalAmount));
+        public IWebElement totalItems => _driver.FindElement(By.XPath(_totalItems));
+        public IWebElement discount => _driver.FindElement(By.XPath(_discount));
+        public IWebElement amountAfterDiscout => _driver.FindElement(By.XPath(_amountAfterDiscout));
+        public IWebElement placeOrderBtn => _driver.FindElement(By.XPath(_placeOrderBtn));
+        public IWebElement countryFilter => _driver.FindElement(By.XPath(_countryFilter));
+        public IWebElement termsConditions => _driver.FindElement(By.XPath(_termsConditions));
+        public IWebElement proceedBtn => _driver.FindElement(By.XPath(_proceed));
+        #endregion
+
+        #region Constructor
+
+        public fbPageControls(IWebDriver driver)
+        {
+            _driver = driver;
+        }
+
+        #endregion
+    }

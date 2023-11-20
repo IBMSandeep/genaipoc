@@ -1,0 +1,225 @@
+using System;
+using System.Threading;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using OpenQA.Selenium;
+using OpenQA.Selenium.Support.UI;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+
+public class facebookFunctions
+    {
+         #region Private Declarations
+
+        public IWebDriver _driver = SeleniumBase.WebDriver;
+        private readonly fbPageControls facebookPage;
+        public List<string> CostofItems = new List<string>();
+        public int noOfItems = 0;
+        public int totalCost = 0;
+        public int count = 0;
+        public List<string> itemsAdded = new List<string>();
+        public List<int> inidvidualQt = new List<int>();
+
+        #endregion
+        
+        #region Constructor
+        public facebookFunctions()
+        {
+            this.facebookPage = new fbPageControls(_driver);
+        }
+
+        #endregion
+	
+	//Launching the App
+        public void launchApp(string URL)
+        {
+            BrowserUtilities.NavigateToAddress(URL);
+        }
+
+        // Searching for the targeted items 
+
+        public void searchItem(string text)
+        {
+            Thread.Sleep(5000);
+            facebookPage.searchBar.Clear();
+            facebookPage.searchBar.SendKeys(text);
+            Thread.Sleep(3000);
+        }
+
+        // Add all items after search to cart
+        public void addAllToCart()
+        {
+            for(int i=0; i<facebookPage.targetedItems.Count; i++)
+            {
+                if(facebookPage.targetedItems[i].Text =="ADD TO CART")
+                {
+                    // Storing the names of products added to cart
+                    itemsAdded.Add(facebookPage.allProductName[i].Text);
+                    // Storing the cost of each searched item which is added to cart
+                    Console.WriteLine(facebookPage.productRate[i].Text);
+                    CostofItems.Add(facebookPage.productRate[i].Text);
+
+                    // Adding the cost of each item and storing it 
+                    totalCost += int.Parse(facebookPage.productRate[i].Text);
+
+                    // Click on Add to Cart button 
+                    facebookPage.targetedItems[i].Click();
+                    Assert.IsTrue(facebookPage.targetedItems[i].Text.Contains("ADDED"));
+
+                    // The number of unique items added to cart
+                    noOfItems++;
+
+                    // Storing the quantity of individual item
+                    inidvidualQt.Add(int.Parse(facebookPage.allProduct_quantity[i].GetAttribute("value")));
+                }
+            }
+        }
+
+        // After the items are added to cart, validating the text displayed beside cart button
+        public void rightCornerValidation()
+        {
+            Assert.IsTrue(noOfItems==int.Parse(facebookPage.topRightItems.Text));
+            Assert.IsTrue(totalCost==int.Parse(facebookPage.topRightprice.Text));
+        }
+
+        public void addBasedonKgs(string kg, string item)
+        {
+            searchItem(item);
+            string name1 = facebookPage.productName.Text;
+            string[] name2 = name1.Split("-");
+            string[] name3 = name2[1].Split(" ");
+            string justKg = name3[0].Trim();
+            Console.WriteLine(justKg);
+            if(justKg==kg)
+            {
+                CostofItems.Add(facebookPage.productRate[0].Text);
+                totalCost += int.Parse(facebookPage.productRate[0].Text);
+                facebookPage.targetedItems[0].Click();
+                noOfItems++;
+                itemsAdded.Add(facebookPage.productName.Text);
+                inidvidualQt.Add(int.Parse(facebookPage.allProduct_quantity[0].GetAttribute("value")));
+            }
+            else
+            {
+                itemsAdded.Add(facebookPage.productName.Text);
+                string[] splitWord = facebookPage.productName.Text.Split("-");
+                string defaultKg = splitWord[1].Substring(0, splitWord[1].IndexOf("Kg")).Trim();
+                if(defaultKg.Contains("/"))
+                {
+                    string[] deno = defaultKg.Split("/");
+                    // Console.WriteLine(deno[1]);
+                    count = int.Parse(deno[1])*int.Parse(kg);
+                    // Console.WriteLine(count);
+                } 
+                else
+                {
+                    count = int.Parse(defaultKg)*int.Parse(kg);
+                    // Console.WriteLine(count);
+                }
+                int y=0;
+                totalCost += int.Parse(facebookPage.productRate[0].Text);
+                while(y!=count-1)
+                {
+                    Thread.Sleep(1000);
+                    facebookPage.increment.Click();
+                    y++;
+                    totalCost += int.Parse(facebookPage.productRate[0].Text);
+                    // Console.WriteLine(totalCost);
+                }
+                facebookPage.targetedItems[0].Click();
+                noOfItems++;
+                inidvidualQt.Add(int.Parse(facebookPage.allProduct_quantity[0].GetAttribute("value")));
+            }
+        }
+
+        // validating the text displayed beside cart button when noitems were selected
+        public void emptyCartValidating()
+        {
+            Assert.IsTrue(0==int.Parse(facebookPage.topRightItems.Text));
+            Assert.IsTrue(0==int.Parse(facebookPage.topRightprice.Text));
+            // Click the cart button to validate the message displayed
+            facebookPage.cartBtn.Click();
+            Assert.IsTrue("You cart is empty!"==facebookPage.cartEmptyMsg.Text);
+        }
+
+        // validating if proceed to Checkout button is disabled when no items were added 
+        public void checkOutWith0Items()
+        {
+            Assert.IsTrue(facebookPage.checkOutBtn.GetAttribute("class")=="disabled");
+            facebookPage.cartBtn.Click();
+        }
+
+        public void checkOutWithItems()
+        {
+            facebookPage.cartBtn.Click();
+            facebookPage.checkOutBtn.Click();
+        }
+
+        public void datagrid()
+        {
+            // Validating the product names added to cart
+            List<string> datagrid_pdNames = new List<string>();
+            for(int x=0; x<facebookPage.datagrid_productName.Count; x++)
+                datagrid_pdNames.Add(facebookPage.datagrid_productName[x].Text);
+            datagrid_pdNames.Sort();
+            itemsAdded.Sort();
+            datagrid_pdNames.SequenceEqual(itemsAdded);
+
+            // validating Quantity column
+            List<int> datagrid_qnt = new List<int>();
+            for(int y=0; y<facebookPage.datagrid_qt.Count; y++)
+                datagrid_qnt.Add(int.Parse(facebookPage.datagrid_qt[y].Text));
+            datagrid_qnt.Sort();
+            inidvidualQt.Sort();
+            datagrid_qnt.SequenceEqual(inidvidualQt);
+
+            // validating the price for each item
+            List<string> datagrid_price = new List<string>();
+            for(int z=0; z<facebookPage.datagrid_price.Count; z++)
+                datagrid_price.Add(facebookPage.datagrid_price[z].Text);
+            datagrid_price.Sort();
+            CostofItems.Sort();
+            datagrid_price.SequenceEqual(CostofItems);
+        }
+
+        public void promoErrorValidation(string promo)
+        {
+            facebookPage.applyBtn.Click();
+            Thread.Sleep(1000);
+            Console.WriteLine(facebookPage.promoInfo.Text);
+            Assert.IsTrue(facebookPage.promoInfo.Text.Contains("Empty code"));
+            Thread.Sleep(1000);
+            facebookPage.promoText.SendKeys(promo);
+            facebookPage.applyBtn.Click();
+            Thread.Sleep(6000);
+            Console.WriteLine(facebookPage.promoInfo.Text);
+            Assert.IsTrue(facebookPage.promoInfo.Text.Contains("Invalid code"));
+
+        }
+
+        public void finalAmountCheck()
+        {
+            Assert.IsTrue(int.Parse(facebookPage.totalAmount.Text)==totalCost);
+            Assert.IsTrue(facebookPage.discount.Text=="0%");
+            Assert.IsTrue(facebookPage.amountAfterDiscout.Text==facebookPage.totalAmount.Text);
+        }
+
+        public void placeOrder()
+        {
+            facebookPage.placeOrderBtn.Click();
+            Thread.Sleep(3000);
+        }
+
+        public void countrySelection(string country)
+        {
+            SelectElement drpdwn = new SelectElement(facebookPage.countryFilter);
+            drpdwn.SelectByValue(country);
+        }
+
+        public void checkout()
+        {   
+            facebookPage.termsConditions.Click();
+            facebookPage.proceedBtn.Click();
+
+        }
+    }

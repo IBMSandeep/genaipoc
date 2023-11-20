@@ -1,0 +1,25 @@
+Feature: Greenkart Website Testing
+
+Scenario: Shopping groceries 
+    Given User navigates to application
+    Then User Validates if any items are added to the cart
+    Then Validates if they can proceed to checkout without adding items
+    Then User searches for "berry" 
+    Then User adds all the elements to the cart
+    When User Validates the Items and Price details on top right corner
+    Then User searches for "melon" 
+    Then User adds all the elements to the cart
+    When User Validates the Items and Price details on top right corner
+    Then User adds "2" kgs of "Pista" to cart
+    When User Validates the Items and Price details on top right corner
+    Then User adds "1" kgs of "PEARS" to cart
+    When User Validates the Items and Price details on top right corner
+    Then User adds "1" kgs of "Walnuts" to cart
+    When User Validates the Items and Price details on top right corner
+    Then User proceeds to checkout 
+    When user validates the details in data grid
+    When user provides invalid "test" promo error should be displayed
+    Then user validates the total amount & items
+    When user places order 
+    Then user selects "India" as the Country
+    Then user agrees to terms & condition and proceeds to checkout
